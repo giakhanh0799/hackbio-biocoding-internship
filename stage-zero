@@ -1,10 +1,81 @@
-individual_info = [ 
-    {
-        "name" : "Khanh Gia Duong",
-        "Slack username" : "khanh",
-        "Country" : "Vietnam",
-        "Email" : "duonggiakhanh07@gmail.com",
-        "Discipline" : "Drug Discovery",
-        "Preferred programming language" : "R"
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOQo4f5ljp0tQxcLRkTUo0v",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
     }
-]
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/giakhanh0799/hackbio-biocoding-internship/blob/main/stage-zero\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "id": "yyPyhtPFr0jf"
+      },
+      "outputs": [],
+      "source": [
+        "individual_info = [\n",
+        "    {\n",
+        "        \"name\" : \"Khanh Gia Duong\",\n",
+        "        \"Slack username\" : \"khanh\",\n",
+        "        \"Country\" : \"Vietnam\",\n",
+        "        \"Email\" : \"duonggiakhanh07@gmail.com\",\n",
+        "        \"Discipline\" : \"Drug Discovery\",\n",
+        "        \"Preferred programming language\" : \"R\"\n",
+        "    }\n",
+        "]"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "individual_info[0]"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pHEVPalbtgxA",
+        "outputId": "23f9b0ca-9861-4b99-93cb-37171d834f90"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'name': 'Khanh Gia Duong',\n",
+              " 'Slack username': 'khanh',\n",
+              " 'Country': 'Vietnam',\n",
+              " 'Email': 'duonggiakhanh07@gmail.com',\n",
+              " 'Discipline': 'Drug Discovery',\n",
+              " 'Preferred programming language': 'R'}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 3
+        }
+      ]
+    }
+  ]
+}
