@@ -1,0 +1,10 @@
+individual_info = [ 
+    {
+        "name" : "Khanh Gia Duong",
+        "Slack username" : "khanh",
+        "Country" : "Vietnam",
+        "Email" : "duonggiakhanh07@gmail.com",
+        "Discipline" : "Drug Discovery",
+        "Preferred programming language" : "R"
+    }
+]
