@@ -1,0 +1,6 @@
+set.seed(123)
+growth_curves <- lapply(1:100, function(i) simulate_growth(time))
+df_growth <- do.call(rbind, growth_curves)
+df_growth$Curve_ID <- rep(1:100, each=length(time))
+
+head(df_growth)
