@@ -1,0 +1,10 @@
+hamming_distance <- function(str1, str2) {
+  if (nchar(str1) < nchar(str2)) {
+    str1 <- paste0(str1, strrep("X", nchar(str2) - nchar(str1)))
+  } else if (nchar(str1) > nchar(str2)) {
+    str2 <- paste0(str2, strrep("X", nchar(str1) - nchar(str2)))
+  }
+
+  sum(unlist(strsplit(str1, "")) != unlist(strsplit(str2, "")))
+}
+hamming_distance("Khanh", "UongGia25796")
