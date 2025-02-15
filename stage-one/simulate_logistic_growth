@@ -1,0 +1,24 @@
+simulate_logistic_growth <- function(time, K = 1000, r = 0.1, lag_var = 10, log_var = 20) {
+  # Randomize lag phase and exponential phase length
+  lag_phase <- sample(1:lag_var, 1)  
+  log_phase <- sample(1:log_var, 1)
+  population <- numeric(length(time))
+  for (t in seq_along(time)) {
+    if (time[t] < lag_phase) {
+      # Lag phase: No significant growth
+      population[t] <- 1  
+    } else if (time[t] < (lag_phase + log_phase)) {
+      # Exponential & Logistic Growth Phase
+      population[t] <- K / (1 + ((K - 1) / 1) * exp(-r * (time[t] - lag_phase)))
+    } else {
+      # Stationary Phase: Population reaches carrying capacity
+      population[t] <- K
+    }
+  }
+  
+  return(data.frame(Time = time, Population = population))
+}
+time <- seq(0, 100, by = 1)
+growth_curve <- simulate_logistic_growth(time)
+plot(growth_curve$Time, growth_curve$Population, type="l", col="blue", lwd=2,
+     xlab="Time", ylab="Population Size", main="Simulated Logistic Growth")
