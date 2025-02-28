@@ -1,0 +1,63 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the dataset
+file_path = '/mnt/data/Data set.pdf'
+# Since the file is a PDF, I'll try extracting the data using tabula-py or pdfplumber
+import pdfplumber
+
+# Extract text from the PDF
+with pdfplumber.open(file_path) as pdf:
+    text_data = ''
+    for page in pdf.pages:
+        text_data += page.extract_text() if page.extract_text() else ''
+
+# Show the first few lines of the extracted text to understand its structure
+text_data[:1000]
+from io import StringIO
+
+# Manually parse the extracted text into a tabular format
+data_str = """
+time  A1  A2  A3  A4  A5  A6  A7  A8  A9  A10 A11  A12  B1  B2  B3  B4  B5  B6  B7  B8  B9 B10  B11  B12  C1  C2  C3  C4  C5  C6  C7  C8 C9 C10  C11  C12
+0  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002
+15 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002
+30 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002
+45 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002  0.002 0.002  0.002  0.002
+60 0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003 0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003 0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003  0.003 0.003  0.003  0.003
+"""
+
+# Read the data into a DataFrame
+data = pd.read_csv(StringIO(data_str), sep='\s+')
+
+# Display the first few rows of the structured data
+data.head()
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Calculate ΔM as the difference between the 24-hour treatment (time=60) and DMSO treatment (time=0)
+dmso_response = data.loc[data['time'] == 0].iloc[0, 1:]
+treatment_24h_response = data.loc[data['time'] == 60].iloc[0, 1:]
+
+# Calculate ΔM for wild-type (WT) and mutants
+# Assuming the first half of columns (A1 to B12) are WT, and the rest (C1 to C12) are mutants
+wt_columns = data.columns[1:25]  # A1 to B12
+mutant_columns = data.columns[25:]  # C1 to C12
+
+dm_wt = treatment_24h_response[wt_columns] - dmso_response[wt_columns]
+dm_mutant = treatment_24h_response[mutant_columns] - dmso_response[mutant_columns]
+
+# Scatter plot of ΔM for WT vs. Mutants
+plt.figure(figsize=(8, 6))
+plt.scatter(dm_wt, dm_mutant, label='Metabolites', color='grey')
+
+# Fit a line with y-intercept 0 and slope 1
+x_vals = np.linspace(min(dm_wt.min(), dm_mutant.min()), max(dm_wt.max(), dm_mutant.max()), 100)
+plt.plot(x_vals, x_vals, 'r--', label='y = x (Slope 1, Intercept 0)')
+
+plt.xlabel('ΔM (Wild Type)')
+plt.ylabel('ΔM (Mutant)')
+plt.title('Scatter Plot of ΔM for Wild Type vs. Mutants')
+plt.legend()
+plt.grid(True)
+plt.show()
