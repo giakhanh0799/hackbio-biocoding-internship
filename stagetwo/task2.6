@@ -1,0 +1,73 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+file_path = "/mnt/data/raw_dna_sequences_for_msa.txt"
+df = pd.read_csv(file_path, sep="\t")
+
+# Filter significant upregulated and downregulated genes
+upregulated = df[(df["log2FoldChange"] > 1) & (df["pvalue"] < 0.01)]
+downregulated = df[(df["log2FoldChange"] < -1) & (df["pvalue"] < 0.01)]
+
+# Volcano plot
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df, x="log2FoldChange", y=-df["pvalue"].apply(lambda x: np.log10(x)),
+                color="grey", alpha=0.5)
+sns.scatterplot(data=upregulated, x="log2FoldChange", y=-upregulated["pvalue"].apply(lambda x: np.log10(x)),
+                color="red", label="Upregulated", alpha=0.7)
+sns.scatterplot(data=downregulated, x="log2FoldChange", y=-downregulated["pvalue"].apply(lambda x: np.log10(x)),
+                color="blue", label="Downregulated", alpha=0.7)
+
+plt.axhline(y=-np.log10(0.01), linestyle="dashed", color="black", alpha=0.7)  # Significance threshold
+plt.axvline(x=1, linestyle="dashed", color="black", alpha=0.7)  # Log2FC threshold for upregulation
+plt.axvline(x=-1, linestyle="dashed", color="black", alpha=0.7)  # Log2FC threshold for downregulation
+
+plt.xlabel("Log2 Fold Change")
+plt.ylabel("-Log10(P-value)")
+plt.title("Volcano Plot of Differentially Expressed Genes")
+plt.legend()
+plt.show()
+
+# Get top 5 upregulated and downregulated genes
+top_5_upregulated = upregulated.nsmallest(5, "pvalue")
+top_5_downregulated = downregulated.nsmallest(5, "pvalue")
+
+top_5_upregulated[["Gene", "log2FoldChange", "pvalue"]], top_5_downregulated[["Gene", "log2FoldChange", "pvalue"]]
+# Display column names to check for discrepancies
+df.columns
+# Reload the dataset with the correct delimiter (tab-separated values)
+df = pd.read_csv(file_path, sep="\s+", engine="python")
+
+# Display the first few rows to verify correct loading
+df.head()
+import numpy as np
+
+# Filter significant upregulated and downregulated genes
+upregulated = df[(df["log2FoldChange"] > 1) & (df["pvalue"] < 0.01)]
+downregulated = df[(df["log2FoldChange"] < -1) & (df["pvalue"] < 0.01)]
+
+# Volcano plot
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df, x="log2FoldChange", y=-np.log10(df["pvalue"]),
+                color="grey", alpha=0.5)
+sns.scatterplot(data=upregulated, x="log2FoldChange", y=-np.log10(upregulated["pvalue"]),
+                color="red", label="Upregulated", alpha=0.7)
+sns.scatterplot(data=downregulated, x="log2FoldChange", y=-np.log10(downregulated["pvalue"]),
+                color="blue", label="Downregulated", alpha=0.7)
+
+plt.axhline(y=-np.log10(0.01), linestyle="dashed", color="black", alpha=0.7)  # Significance threshold
+plt.axvline(x=1, linestyle="dashed", color="black", alpha=0.7)  # Log2FC threshold for upregulation
+plt.axvline(x=-1, linestyle="dashed", color="black", alpha=0.7)  # Log2FC threshold for downregulation
+
+plt.xlabel("Log2 Fold Change")
+plt.ylabel("-Log10(P-value)")
+plt.title("Volcano Plot of Differentially Expressed Genes")
+plt.legend()
+plt.show()
+
+# Get top 5 upregulated and downregulated genes
+top_5_upregulated = upregulated.nsmallest(5, "pvalue")
+top_5_downregulated = downregulated.nsmallest(5, "pvalue")
+
+top_5_upregulated[["Gene", "log2FoldChange", "pvalue"]], top_5_downregulated[["Gene", "log2FoldChange", "pvalue"]]
