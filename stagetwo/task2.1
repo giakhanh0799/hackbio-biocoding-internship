@@ -1,1 +1,75 @@
+# Install the necessary libraries if you haven't already
+if(!require(ggpubr)){install.packages("ggpubr")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(dplyr)){install.packages("dplyr")}
+if(!require(tidyr)){install.packages("tidyr")}
+
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+
+# Load the dataset
+data <- read.csv('Data_set.csv')
+
+# Inspect the data
+str(data)
+head(data)
+
+# Function to calculate time to carrying capacity
+time_to_carrying_capacity <- function(od_data, time_data, threshold = 0.95) {
+  max_od <- max(od_data, na.rm = TRUE)
+  carrying_capacity <- max_od * threshold
+  time_to_capacity <- min(time_data[od_data >= carrying_capacity])
+  return(time_to_capacity)
+}
+
+# Prepare data for plotting
+data_long <- data %>% 
+  pivot_longer(cols = -Time, names_to = 'Condition', values_to = 'OD600') %>%
+  separate(Condition, into = c('Strain', 'Type'), sep = '_')
+
+# Plot growth curves for each strain
+p_list <- list()
+for (strain in unique(data_long$Strain)) {
+  p <- ggplot(data_long %>% filter(Strain == strain), 
+              aes(x = Time, y = OD600, color = Type, group = Type)) +
+    geom_line() +
+    labs(title = paste('Growth Curve for', strain),
+         x = 'Time (h)', y = 'OD600') +
+    theme_minimal()
+  p_list[[strain]] <- p
+}
+ggarrange(plotlist = p_list, ncol = 2, nrow = 2)
+
+# Calculate time to carrying capacity for each condition
+carrying_times <- data_long %>%
+  group_by(Strain, Type) %>%
+  summarise(Time_to_Carrying = time_to_carrying_capacity(OD600, Time, 0.95),
+            .groups = 'drop')
+
+# Scatter plot of time to carrying capacity
+ggplot(carrying_times, aes(x = Type, y = Time_to_Carrying, color = Type)) +
+  geom_jitter(width = 0.2, height = 0) +
+  labs(title = 'Time to Carrying Capacity (Knock-out vs Knock-in)',
+       x = 'Strain Type', y = 'Time (h)') +
+  theme_minimal()
+
+# Box plot of time to carrying capacity
+ggplot(carrying_times, aes(x = Type, y = Time_to_Carrying, fill = Type)) +
+  geom_boxplot() +
+  labs(title = 'Boxplot of Time to Carrying Capacity',
+       x = 'Strain Type', y = 'Time (h)') +
+  theme_minimal()
+
+# Statistical test: comparing knock-out vs knock-in strains
+t_test_result <- t.test(Time_to_Carrying ~ Type, data = carrying_times)
+t_test_result
+
+# Observations as comments:
+# 1. If p-value < 0.05, there is a significant difference in the time to reach carrying capacity.
+# 2. The scatter and box plots help visualize the distribution and variance between the groups.
+# 3. Longer times in knock-out strains may suggest impaired growth or adaptation.
 
